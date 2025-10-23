@@ -98,6 +98,13 @@ namespace StepResponse.SimulationModel
             _previousOutput2 = 0f;
         }
 
+
+        internal override void SetCurrent(float current)
+        {
+            _previousOutput1 = current;
+            _previousOutput2 = current;
+        }
+
         /// <summary>
         /// Second-order system discretization (Tustin / bilinear approximation).
         /// </summary>

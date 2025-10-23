@@ -1,10 +1,11 @@
-﻿using System.Collections.ObjectModel;
-using System.Linq;
-using System.Windows.Media;
+﻿using OxyPlot;
 using StepResponse.SimulationModel;
 using System;
-using System.Windows;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
+using System.Windows;
+using System.Windows.Media;
 
 namespace StepResponse.ViewModels
 {
@@ -51,6 +52,9 @@ namespace StepResponse.ViewModels
                         case ModelType.SecondOrder:
                             newModel = new SecondOrderModel();
                             break;
+                        case ModelType.Sigmoid:
+                            newModel = new SigmoidModel();
+                            break;
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
@@ -80,6 +84,8 @@ namespace StepResponse.ViewModels
             set => SetValue(ref _usePid, value);
         }
 
+        public float StartAt { get; set; }
+
         public float Setpoint { get; set; }
 
         public SimulatorEditViewModel(SimulatorViewModel simulatorVm)
@@ -99,6 +105,7 @@ namespace StepResponse.ViewModels
             Color = simulatorVm.Color;
             UsePid = simulatorVm.UsePid;
             Setpoint = simulatorVm.Setpoint;
+            StartAt = simulatorVm.StartAt;
 
             InstallModelParametersPropertyChanged();
         }
@@ -152,6 +159,7 @@ namespace StepResponse.ViewModels
                 _simulatorVm.ModelType = ModelType;
                 _simulatorVm.UsePid = UsePid;
                 _simulatorVm.Setpoint = Setpoint;
+                _simulatorVm.StartAt = StartAt;
 
                 // Apply model parameters
                 foreach (var kv in ModelParameters)

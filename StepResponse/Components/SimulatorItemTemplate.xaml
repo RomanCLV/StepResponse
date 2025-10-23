@@ -25,17 +25,21 @@
             
             <Separator Margin="0,2,0,2"/>
 
-            <StackPanel Orientation="Vertical" Margin="0,6,0,0" VerticalAlignment="Center" >
+            <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                    <TextBlock Text="Start at:" VerticalAlignment="Center" Width="65"/>
+                    <TextBox Text="{Binding StartAt, Mode=TwoWay}" VerticalAlignment="Center" Width="75" />
+                </StackPanel>
+            <StackPanel Orientation="Vertical" VerticalAlignment="Center" >
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Output:" VerticalAlignment="Center" Width="55"/>
+                    <TextBlock Text="Output:" VerticalAlignment="Center" Width="65"/>
                     <TextBlock Text="{Binding LastOutput, StringFormat={}{0:F3}, Mode=OneWay}" VerticalAlignment="Center"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Setpoint:" VerticalAlignment="Center" Width="55"/>
+                    <TextBlock Text="Setpoint:" VerticalAlignment="Center" Width="65"/>
                     <TextBox Text="{Binding Setpoint, Mode=TwoWay}" VerticalAlignment="Center" Width="75" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Error:" VerticalAlignment="Center" Width="55"/>
+                    <TextBlock Text="Error:" VerticalAlignment="Center" Width="65"/>
                     <TextBlock Text="{Binding LastError, StringFormat={}{0:F3}, Mode=OneWay}" VerticalAlignment="Center"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">

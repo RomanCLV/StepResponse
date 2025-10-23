@@ -4,6 +4,7 @@
     {
         Linear,
         FirstOrder,
-        SecondOrder
+        SecondOrder,
+        Sigmoid
     }
 }

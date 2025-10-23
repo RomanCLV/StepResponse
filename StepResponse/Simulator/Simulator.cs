@@ -64,6 +64,20 @@ namespace StepResponse.Simulator
         }
 
         public float LastOutput { get; private set; }
+        public float _startAt;
+        public float StartAt
+        {
+            get { return _startAt; }
+            set
+            {
+                if (_startAt != value)
+                {
+                    _startAt = value;
+                    Model.SetCurrent(_startAt);
+                }
+            }
+        }
+
         public float Setpoint { get; set; }
         public float LastError { get; private set; }
         public ulong LastComputeMicroseconds { get; private set; }
@@ -126,6 +140,9 @@ namespace StepResponse.Simulator
                 case ModelType.SecondOrder:
                     Model = new SecondOrderModel();
                     break;
+                case ModelType.Sigmoid:
+                    Model = new SigmoidModel();
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -133,12 +150,14 @@ namespace StepResponse.Simulator
 
         public void BuildName(out string name)
         {
-            if (_modelType is ModelType.FirstOrder)
+            if (_modelType is ModelType.Linear)
                 name = "Linear";
             else if (_modelType is ModelType.FirstOrder)
                 name = "First Order";
             else if (_modelType is ModelType.SecondOrder)
                 name = "Second Order";
+            else if (_modelType is ModelType.Sigmoid)
+                name = "Sigmoid";
             else
                 name = Model.GetType().Name;
             if (_usePid)
@@ -153,6 +172,8 @@ namespace StepResponse.Simulator
                 param = $"K={firstOrderModel.K:0.###}, T={firstOrderModel.T:0.###}";
             else if (Model is SecondOrderModel secondOrderModel)
                 param = $"K={secondOrderModel.K:0.###}, W0={secondOrderModel.W0:0.###}, Z={secondOrderModel.Z:0.###}";
+            else if (Model is SigmoidModel sigmoidModel)
+                param = $"K={sigmoidModel.K:0.###}, S={sigmoidModel.S:0.###}, X0={sigmoidModel.X0:0.###}, R={sigmoidModel.R:0.###}";
             else
                 param = "";
             if (_usePid)
@@ -181,6 +202,11 @@ namespace StepResponse.Simulator
                 IsStarted = false;
                 Stopped?.Invoke(this, EventArgs.Empty);
             }
+        }
+
+        public void SetCurrentOutputTo(float value)
+        {
+            Model.SetCurrent(value);
         }
 
         /// <summary>

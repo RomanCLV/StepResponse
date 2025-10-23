@@ -66,6 +66,11 @@ namespace StepResponse.SimulationModel
             _previousOutput = 0f;
         }
 
+        internal override void SetCurrent(float current)
+        {
+            _previousOutput = current;
+        }
+
         internal override float CurrentOutput()
         {
             return _previousOutput;

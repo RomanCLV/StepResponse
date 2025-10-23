@@ -117,6 +117,7 @@
     <Compile Include="SimulationModel\ModelType.cs" />
     <Compile Include="SimulationModel\FirstOrderModel.cs" />
     <Compile Include="SimulationModel\SecondOrderModel.cs" />
+    <Compile Include="SimulationModel\SigmoidModel.cs" />
     <Compile Include="SimulationModel\SimulationModel.cs" />
     <Compile Include="SimulationSamples\IReadOnlySimulatorSamplesManager.cs" />
     <Compile Include="SimulationSamples\ReadOnlySimulatorSamplesManager.cs" />

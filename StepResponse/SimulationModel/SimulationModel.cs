@@ -28,6 +28,8 @@ namespace StepResponse.SimulationModel
 
         internal abstract float CurrentOutput();
 
+        internal abstract void SetCurrent(float current);
+
         internal abstract float Update(float input, float elapsedTime);
 
         /// <summary>

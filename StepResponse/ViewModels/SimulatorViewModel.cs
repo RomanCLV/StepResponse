@@ -89,6 +89,18 @@ namespace StepResponse.ViewModels
             }
         }
 
+
+        private float _startAt;
+        public float StartAt
+        {
+            get => _startAt;
+            set
+            {
+                if (SetValue(ref _startAt, value))
+                    _simulator.StartAt = _startAt;
+            }
+        }
+
         private float _lastError;
         public float LastError
         {
