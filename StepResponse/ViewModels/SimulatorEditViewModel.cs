@@ -42,6 +42,9 @@ namespace StepResponse.ViewModels
                     SimulationModel.SimulationModel newModel;
                     switch (_modelType)
                     {
+                        case ModelType.Linear:
+                            newModel = new LinearModel();
+                            break;
                         case ModelType.FirstOrder:
                             newModel = new FirstOrderModel();
                             break;
@@ -84,7 +87,7 @@ namespace StepResponse.ViewModels
             _simulatorVm = simulatorVm;
 
             // ComboBox items
-            ModelTypes = new ObservableCollection<ModelType>(System.Enum.GetValues(typeof(ModelType)).Cast<ModelType>());
+            ModelTypes = new ObservableCollection<ModelType>(Enum.GetValues(typeof(ModelType)).Cast<ModelType>());
 
             // Parameters from model
             ModelParameters = new ObservableCollection<EditableParameter>(_simulatorVm.Simulator.Model.GetParameters().Select(kv => new EditableParameter(kv.Key, kv.Value)));

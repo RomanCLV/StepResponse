@@ -117,6 +117,9 @@ namespace StepResponse.Simulator
         {
             switch (_modelType)
             {
+                case ModelType.Linear:
+                    Model = new LinearModel();
+                    break;
                 case ModelType.FirstOrder:
                     Model = new FirstOrderModel();
                     break;
@@ -131,6 +134,8 @@ namespace StepResponse.Simulator
         public void BuildName(out string name)
         {
             if (_modelType is ModelType.FirstOrder)
+                name = "Linear";
+            else if (_modelType is ModelType.FirstOrder)
                 name = "First Order";
             else if (_modelType is ModelType.SecondOrder)
                 name = "Second Order";
@@ -142,7 +147,9 @@ namespace StepResponse.Simulator
 
         public void BuildParams(out string param)
         {
-            if (Model is FirstOrderModel firstOrderModel)
+            if (Model is LinearModel linearModel)
+                param = $"K={linearModel.K:0.###}, R={linearModel.R:0.###}";
+            else if (Model is FirstOrderModel firstOrderModel)
                 param = $"K={firstOrderModel.K:0.###}, T={firstOrderModel.T:0.###}";
             else if (Model is SecondOrderModel secondOrderModel)
                 param = $"K={secondOrderModel.K:0.###}, W0={secondOrderModel.W0:0.###}, Z={secondOrderModel.Z:0.###}";

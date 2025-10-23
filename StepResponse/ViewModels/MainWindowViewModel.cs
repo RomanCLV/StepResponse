@@ -112,7 +112,6 @@ namespace StepResponse.ViewModels
         public RelayCommand AddSimulatorCommand { get; }
         public RelayCommand RemoveSimulatorCommand { get; }
 
-
         // Constructeur
         public MainWindowViewModel(SimulationManager simulationManager)
         {
@@ -204,8 +203,8 @@ namespace StepResponse.ViewModels
             if (!Stopped)
                 return;
 
-            // Default creation : FirstOrder model with PID enabled (tu peux exposer UI pour chooser)
-            var sim = new Simulator.Simulator(ModelType.FirstOrder, usePid: false);
+            // Default creation : Linear model with PID enabled
+            var sim = new Simulator.Simulator((ModelType)Enum.GetValues(typeof(ModelType)).GetValue(0), usePid: false);
 
             // Add to manager and to observable collection
             _simulationManager.AddSimulator(sim);

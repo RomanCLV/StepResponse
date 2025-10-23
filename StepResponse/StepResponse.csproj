@@ -113,6 +113,7 @@
     <Compile Include="Control\PidController.cs" />
     <Compile Include="Converters\NullToBoolConverter.cs" />
     <Compile Include="SimulationModel\IParametrable.cs" />
+    <Compile Include="SimulationModel\LinearModel.cs" />
     <Compile Include="SimulationModel\ModelType.cs" />
     <Compile Include="SimulationModel\FirstOrderModel.cs" />
     <Compile Include="SimulationModel\SecondOrderModel.cs" />
