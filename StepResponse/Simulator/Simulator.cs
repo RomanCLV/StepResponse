@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using StepResponse.Control;
 using StepResponse.SimulationModel;
 using SM = StepResponse.SimulationModel;
@@ -150,32 +151,23 @@ namespace StepResponse.Simulator
 
         public void BuildName(out string name)
         {
-            if (_modelType is ModelType.Linear)
-                name = "Linear";
-            else if (_modelType is ModelType.FirstOrder)
-                name = "First Order";
-            else if (_modelType is ModelType.SecondOrder)
-                name = "Second Order";
-            else if (_modelType is ModelType.Sigmoid)
-                name = "Sigmoid";
-            else
-                name = Model.GetType().Name;
+            name = Model.Name;
             if (_usePid)
                 name += " + PID";
         }
 
         public void BuildParams(out string param)
         {
-            if (Model is LinearModel linearModel)
-                param = $"K={linearModel.K:0.###}, R={linearModel.R:0.###}";
-            else if (Model is FirstOrderModel firstOrderModel)
-                param = $"K={firstOrderModel.K:0.###}, T={firstOrderModel.T:0.###}";
-            else if (Model is SecondOrderModel secondOrderModel)
-                param = $"K={secondOrderModel.K:0.###}, W0={secondOrderModel.W0:0.###}, Z={secondOrderModel.Z:0.###}";
-            else if (Model is SigmoidModel sigmoidModel)
-                param = $"K={sigmoidModel.K:0.###}, A={sigmoidModel.A:0.###}";
-            else
-                param = "";
+            Dictionary<string, double> parameters = Model.GetParameters();
+
+            param = string.Empty;
+            foreach (var kvp in parameters)
+            {
+                if (param.Length > 0)
+                    param += ", ";
+                param += $"{kvp.Key}={kvp.Value:0.###}";
+            }
+
             if (_usePid)
                 param += (string.IsNullOrEmpty(param) ? "" : "\n") + $"Kp={Pid.Kp:0.###}, Ki={Pid.Ki:0.###}, Kd={Pid.Kd:0.###}";
         }

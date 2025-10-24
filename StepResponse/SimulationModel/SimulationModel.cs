@@ -21,6 +21,8 @@ namespace StepResponse.SimulationModel
     {
         public EventHandler? ParametersChanged;
 
+        public virtual string Name => GetType().Name;
+
         /// <summary>
         /// Reset simulation state
         /// </summary>

@@ -21,6 +21,8 @@ namespace StepResponse.SimulationModel
         private double _previousOutput; // y[n-1]
 
         // Properties
+        public override string Name => "Linear";
+
         public double K
         {
             get => _k;

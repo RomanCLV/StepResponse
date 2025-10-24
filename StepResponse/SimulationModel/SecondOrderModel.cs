@@ -29,6 +29,8 @@ namespace StepResponse.SimulationModel
         private double _previousOutput2; // y[n-2]
 
         // Properties for direct access
+        public override string Name => "Second Order";
+
         public double K 
         {
             get => _k;
