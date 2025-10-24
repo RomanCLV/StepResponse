@@ -16,14 +16,14 @@ namespace StepResponse.SimulationModel
         public const string T_KEY = "T";
 
         // Model parameters as fields
-        private float _k;
-        private float _t;
+        private double _k;
+        private double _t;
 
         // Simulation state (previous outputs for second-order system)
-        private float _previousOutput; // y[n-1]
+        private double _previousOutput; // y[n-1]
 
         // Properties
-        public float K 
+        public double K 
         {
             get => _k;
             set 
@@ -36,12 +36,12 @@ namespace StepResponse.SimulationModel
             }
         }
 
-        public float T 
+        public double T 
         {
             get => _t;
             set
             {
-                if (value <= 0)
+                if (value <= 0.0)
                     throw new ArgumentOutOfRangeException(nameof(T), "T must be positive.");
 
                 if (_t != value)
@@ -52,26 +52,26 @@ namespace StepResponse.SimulationModel
             }
         }
 
-        public FirstOrderModel() : this(1f, 1f) { }
+        public FirstOrderModel() : this(1.0, 1.0) { }
 
-        public FirstOrderModel(float k, float t)
+        public FirstOrderModel(double k, double t)
         {
             _k = k;
             _t = t;
-            _previousOutput = 0f;
+            _previousOutput = 0.0;
         }
 
         internal override void Reset()
         {
-            _previousOutput = 0f;
+            _previousOutput = 0.0;
         }
 
-        internal override void SetCurrent(float current)
+        internal override void SetCurrent(double current)
         {
             _previousOutput = current;
         }
 
-        internal override float CurrentOutput()
+        internal override double CurrentOutput()
         {
             return _previousOutput;
         }
@@ -82,7 +82,7 @@ namespace StepResponse.SimulationModel
         /// <param name="input">Current input value (u[n])</param>
         /// <param name="elapsedTime">Sampling interval (dt)</param>
         /// <returns>Current output value (y[n])</returns>
-        internal override float Update(float input, float elapsedTime)
+        internal override double Update(double input, double elapsedTime)
         {
             // y[n] = y[n-1] + (dt / T) * (K * u[n] - y[n-1])
 
@@ -90,26 +90,26 @@ namespace StepResponse.SimulationModel
             return _previousOutput;
         }
 
-        public override Dictionary<string, float> GetParameters()
+        public override Dictionary<string, double> GetParameters()
         {
-            return new Dictionary<string, float>
+            return new Dictionary<string, double>
             {
                 { K_KEY, _k },
                 { T_KEY, _t }
             };
         }
 
-        public override bool GetParameter(string param, out float value)
+        public override bool GetParameter(string param, out double value)
         {
             switch (param)
             {
                 case K_KEY: value = _k; return true;
                 case T_KEY: value = _t; return true;
-                default: value = 0f; return false;
+                default: value = 0.0; return false;
             }
         }
 
-        public override bool SetParameter(string param, float value)
+        public override bool SetParameter(string param, double value)
         {
             switch (param)
             {
@@ -119,12 +119,12 @@ namespace StepResponse.SimulationModel
             }
         }
 
-        public override bool IsValidValue(string param, float value)
+        public override bool IsValidValue(string param, double value)
         {
             switch (param)
             {
-                case K_KEY: return true; // K can be any float
-                case T_KEY: return value > 0; // T must be positive
+                case K_KEY: return true; // K can be any double
+                case T_KEY: return value > 0.0; // T must be positive
                 default: return false;
             }
         }

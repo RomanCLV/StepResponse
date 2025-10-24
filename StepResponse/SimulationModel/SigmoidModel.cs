@@ -17,13 +17,13 @@ namespace StepResponse.SimulationModel
         public const string A_KEY = "A";
 
         // Parameters
-        private float _k; // final value (saturation)
-        private float _a; // growth rate
+        private double _k; // final value (saturation)
+        private double _a; // growth rate
 
         // State
-        private float _previousOutput;
+        private double _previousOutput;
 
-        public float K
+        public double K
         {
             get => _k;
             set
@@ -36,12 +36,12 @@ namespace StepResponse.SimulationModel
             }
         }
 
-        public float A
+        public double A
         {
             get => _a;
             set
             {
-                if (value <= 0)
+                if (value <= 0.0)
                     throw new ArgumentOutOfRangeException(nameof(A), "A must be positive.");
 
                 if (_a != value)
@@ -52,70 +52,70 @@ namespace StepResponse.SimulationModel
             }
         }
 
-        public SigmoidModel() : this(1f, 1f) { }
+        public SigmoidModel() : this(1.0, 1.0) { }
 
-        public SigmoidModel(float k, float a)
+        public SigmoidModel(double k, double a)
         {
             _k = k;
             _a = a;
-            _previousOutput = 0.001f; // éviter y=0 (bloqué)
+            _previousOutput = 0.0; 
         }
 
         internal override void Reset()
         {
-            _previousOutput = 0.001f;
+            _previousOutput = 0.0;
         }
 
-        internal override void SetCurrent(float current)
+        internal override void SetCurrent(double current)
         {
             _previousOutput = current;
         }
 
-        internal override float CurrentOutput()
+        internal override double CurrentOutput()
         {
             return _previousOutput;
         }
 
-        internal override float Update(float input, float elapsedTime)
+        internal override double Update(double input, double elapsedTime)
         {
             // On utilise l'entrée comme "activation" (0 ou 1)
-            // Quand input=0 → pas de croissance
-            // Quand input>0 → croissance vers K
+            // Quand input=0 -> pas de croissance
+            // Quand input>0 -> croissance vers K
 
-            if (input <= 0f)
+            if (input <= 0.0)
                 return _previousOutput; // pas de croissance
 
             // Équation logistique discrète
-            float y = _previousOutput;
-            y += elapsedTime * _a * y * (1f - y / _k);
+            double y = _previousOutput == 0.0 ? 0.001 : _previousOutput; // pour éviter y=0 (bloqué)
+            y += elapsedTime * _a * y * (1.0 - y / _k);
 
             // Clamp pour stabilité numérique
-            y = Math.Max(0f, Math.Min(_k, y));
+            y = Math.Max(0.0, Math.Min(_k, y));
 
             _previousOutput = y;
             return y;
         }
 
-        public override Dictionary<string, float> GetParameters()
+        public override Dictionary<string, double> GetParameters()
         {
-            return new Dictionary<string, float>
+            return new Dictionary<string, double>
             {
                 { K_KEY, _k },
                 { A_KEY, _a },
             };
         }
 
-        public override bool GetParameter(string param, out float value)
+        public override bool GetParameter(string param, out double value)
         {
             switch (param)
             {
                 case K_KEY: value = _k; return true;
                 case A_KEY: value = _a; return true;
-                default: value = 0f; return false;
+                default: value = 0.0; return false;
             }
         }
 
-        public override bool SetParameter(string param, float value)
+        public override bool SetParameter(string param, double value)
         {
             switch (param)
             {
@@ -125,12 +125,12 @@ namespace StepResponse.SimulationModel
             }
         }
 
-        public override bool IsValidValue(string param, float value)
+        public override bool IsValidValue(string param, double value)
         {
             switch (param)
             {
-                case K_KEY: return value > 0;
-                case A_KEY: return value > 0;
+                case K_KEY: return value > 0.0;
+                case A_KEY: return value > 0.0;
                 default: return false;
             }
         }

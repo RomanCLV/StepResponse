@@ -14,14 +14,14 @@ namespace StepResponse.SimulationModel
         public const string K_KEY = "K";
         public const string R_KEY = "R";
 
-        private float _k;
-        private float _r;
+        private double _k;
+        private double _r;
 
         // Simulation state (previous outputs for second-order system)
-        private float _previousOutput; // y[n-1]
+        private double _previousOutput; // y[n-1]
 
         // Properties
-        public float K
+        public double K
         {
             get => _k;
             set
@@ -34,12 +34,12 @@ namespace StepResponse.SimulationModel
             }
         }
 
-        public float R
+        public double R
         {
             get => _r;
             set
             {
-                if (value <= 0)
+                if (value <= 0.0)
                     throw new ArgumentOutOfRangeException(nameof(R), "R must be positive.");
 
                 if (_r != value)
@@ -50,26 +50,26 @@ namespace StepResponse.SimulationModel
             }
         }
 
-        public LinearModel() : this(1f, 1f) { }
+        public LinearModel() : this(1.0, 1.0) { }
 
-        public LinearModel(float k, float r)
+        public LinearModel(double k, double r)
         {
             _k = k;
             _r = r;
-            _previousOutput = 0f;
+            _previousOutput = 0.0;
         }
 
         internal override void Reset()
         {
-            _previousOutput = 0f;
+            _previousOutput = 0.0;
         }
 
-        internal override void SetCurrent(float current)
+        internal override void SetCurrent(double current)
         {
             _previousOutput = current;
         }
 
-        internal override float CurrentOutput()
+        internal override double CurrentOutput()
         {
             return _previousOutput;
         }
@@ -80,10 +80,10 @@ namespace StepResponse.SimulationModel
         /// <param name="input">Current input value (u[n])</param>
         /// <param name="elapsedTime">Sampling interval (dt)</param>
         /// <returns>Current output value (y[n])</returns>
-        internal override float Update(float input, float elapsedTime)
+        internal override double Update(double input, double elapsedTime)
         {
             // y[n] = y[n-1] + (dt / T) * (K * u[n] - y[n-1])
-            float target = _k * input;
+            double target = _k * input;
             if (_previousOutput > target)
             {
                 _previousOutput = Math.Max(target, _previousOutput - _r * elapsedTime);
@@ -96,26 +96,26 @@ namespace StepResponse.SimulationModel
             return _previousOutput;
         }
 
-        public override Dictionary<string, float> GetParameters()
+        public override Dictionary<string, double> GetParameters()
         {
-            return new Dictionary<string, float>
+            return new Dictionary<string, double>
             {
                 { K_KEY, _k },
                 { R_KEY, _r }
             };
         }
 
-        public override bool GetParameter(string param, out float value)
+        public override bool GetParameter(string param, out double value)
         {
             switch (param)
             {
                 case K_KEY: value = _k; return true;
                 case R_KEY: value = _r; return true;
-                default: value = 0f; return false;
+                default: value = 0.0; return false;
             }
         }
 
-        public override bool SetParameter(string param, float value)
+        public override bool SetParameter(string param, double value)
         {
             switch (param)
             {
@@ -125,12 +125,12 @@ namespace StepResponse.SimulationModel
             }
         }
 
-        public override bool IsValidValue(string param, float value)
+        public override bool IsValidValue(string param, double value)
         {
             switch (param)
             {
-                case K_KEY: return true; // K can be any float
-                case R_KEY: return value > 0; // R must be positive
+                case K_KEY: return true; // K can be any double
+                case R_KEY: return value > 0.0; // R must be positive
                 default: return false;
             }
         }

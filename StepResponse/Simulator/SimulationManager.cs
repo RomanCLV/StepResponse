@@ -30,8 +30,8 @@ namespace StepResponse.Simulator
 
         bool _globalSetPointChanged;
 
-        private float _globalSetpoint;
-        public float GlobalSetpoint
+        private double _globalSetpoint;
+        public double GlobalSetpoint
         {
             get => _globalSetpoint;
             set
@@ -55,18 +55,18 @@ namespace StepResponse.Simulator
 
         public uint SamplesPerCollection => _simulatorSamplesManager.SamplesPerCollection;
 
-        public float SimulationTime { get; private set; }
+        public double SimulationTime { get; private set; }
 
         public bool IsRunning { get; private set; }
 
-        public SimulationManager(float samplingTimeSecs = 0.010f, float globalSetpoint = 0f)
+        public SimulationManager(float samplingTimeSecs = 0.010f, double globalSetpoint = 0.0)
         {
             _lock = new object();
             _simulators = new List<Simulator>();
             _simulatorSamplesManager = new SimulatorSamplesManager();
             _readOnlySamplesManager = new ReadOnlySimulatorSamplesManager(_simulatorSamplesManager);
 
-            SimulationTime = 0f;
+            SimulationTime = 0.0;
             _samplingTimeSeconds = samplingTimeSecs;
             _globalSetPointChanged = false;
             _globalSetpoint = globalSetpoint;
@@ -194,11 +194,11 @@ namespace StepResponse.Simulator
 
             long now;
             double dtMeasuredSeconds;
-            float dt = SamplingTimeSeconds;
+            double dt = SamplingTimeSeconds;
 
             int simIndex;
             int simCount = _simulators.Count;
-            SimulationTime = 0f;
+            SimulationTime = 0.0;
 
             // Prepare samples storage
             // No need to call Clear() because Reserve() does it

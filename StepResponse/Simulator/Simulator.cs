@@ -63,9 +63,9 @@ namespace StepResponse.Simulator
             }
         }
 
-        public float LastOutput { get; private set; }
-        public float _startAt;
-        public float StartAt
+        public double LastOutput { get; private set; }
+        public double _startAt;
+        public double StartAt
         {
             get { return _startAt; }
             set
@@ -78,8 +78,8 @@ namespace StepResponse.Simulator
             }
         }
 
-        public float Setpoint { get; set; }
-        public float LastError { get; private set; }
+        public double Setpoint { get; set; }
+        public double LastError { get; private set; }
         public ulong LastComputeMicroseconds { get; private set; }
 
         public bool IsStarted { get; private set; }
@@ -92,19 +92,19 @@ namespace StepResponse.Simulator
         private long _start;
         private long _end;
         private long _elapsedTicks;
-        private float _measurement;
-        private float _command;
+        private double _measurement;
+        private double _command;
 
         public Simulator(ModelType modelType, bool usePid)
         {
             _modelType = modelType;
             _model = null;
-            Pid = new PidController(1f, 0f, 0f); // set PID before BuildModel
+            Pid = new PidController(1.0, 0.0, 0.0); // set PID before BuildModel
             BuildModel();
             _usePid = usePid;
-            Setpoint = 0f;
-            LastOutput = 0f;
-            LastError = 0f;
+            Setpoint = 0.0;
+            LastOutput = 0.0;
+            LastError = 0.0;
             LastComputeMicroseconds = 0UL;
 
             Pid.ParametersChanged += Pid_onParametersChanged;
@@ -173,7 +173,7 @@ namespace StepResponse.Simulator
             else if (Model is SecondOrderModel secondOrderModel)
                 param = $"K={secondOrderModel.K:0.###}, W0={secondOrderModel.W0:0.###}, Z={secondOrderModel.Z:0.###}";
             else if (Model is SigmoidModel sigmoidModel)
-                param = $"K={sigmoidModel.K:0.###}, S={sigmoidModel.S:0.###}, X0={sigmoidModel.X0:0.###}, R={sigmoidModel.R:0.###}";
+                param = $"K={sigmoidModel.K:0.###}, A={sigmoidModel.A:0.###}";
             else
                 param = "";
             if (_usePid)
@@ -204,7 +204,7 @@ namespace StepResponse.Simulator
             }
         }
 
-        public void SetCurrentOutputTo(float value)
+        public void SetCurrentOutputTo(double value)
         {
             Model.SetCurrent(value);
         }
@@ -213,15 +213,15 @@ namespace StepResponse.Simulator
         /// Called by SimulationManager each tick.
         /// Returns the new output.
         /// </summary>
-        public float Step(float setpoint, float dtSeconds)
+        public double Step(double setpoint, double dtSeconds)
         {
             if (!IsStarted)
-                return 0f;
+                return 0.0;
             Setpoint = setpoint;
             return Step(dtSeconds);
         }
 
-        public float Step(float dtSeconds)
+        public double Step(double dtSeconds)
         {
             _start = System.Diagnostics.Stopwatch.GetTimestamp();
 
@@ -242,9 +242,9 @@ namespace StepResponse.Simulator
         {
             Model.Reset();
             Pid.Reset();
-            LastOutput = 0f;
-            //Setpoint = 0f;
-            LastError = 0f;
+            LastOutput = 0.0;
+            //Setpoint = 0.0;
+            LastError = 0.0;
             LastComputeMicroseconds = 0UL;
         }
     }

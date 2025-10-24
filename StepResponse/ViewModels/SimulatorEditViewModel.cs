@@ -29,7 +29,7 @@ namespace StepResponse.ViewModels
                 {
                     // --- Sauvegarde des valeurs importantes ---
                     bool gainFound = false;
-                    float oldGain = 1.0f;
+                    double oldGain = 1.0;
                     for (var i = 0; i < ModelParameters.Count; i++)
                     {
                         if (ModelParameters[i].Key == "K")
@@ -84,9 +84,9 @@ namespace StepResponse.ViewModels
             set => SetValue(ref _usePid, value);
         }
 
-        public float StartAt { get; set; }
+        public double StartAt { get; set; }
 
-        public float Setpoint { get; set; }
+        public double Setpoint { get; set; }
 
         public SimulatorEditViewModel(SimulatorViewModel simulatorVm)
         {
@@ -131,7 +131,7 @@ namespace StepResponse.ViewModels
                 // if not valid, restore previous value and show error message
 
                 // get current value from model
-                _simulatorVm.Simulator.Model.GetParameter(editableParameter.Key, out float currentValue);
+                _simulatorVm.Simulator.Model.GetParameter(editableParameter.Key, out double currentValue);
 
                 // Force to raise the error (set an invalid parameter) to get the message
                 try

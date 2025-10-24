@@ -14,7 +14,7 @@ namespace StepResponse.ViewModels
     {
         // Champs privés
         private float _samplingTime;
-        private float _globalSetpoint;
+        private double _globalSetpoint;
         private bool _stopped;
 
         private readonly SimulationManager _simulationManager;
@@ -35,15 +35,15 @@ namespace StepResponse.ViewModels
                 // bornes utiles : 1 ms .. 1 s
                 if (value < 0.001f)
                     value = 0.001f;
-                else if (value > 1f)
-                    value = 1f;
+                else if (value > 1.0f)
+                    value = 1.0f;
 
                 if (SetValue(ref _samplingTime, value))
                     _simulationManager.SamplingTimeSeconds = value;
             }
         }
 
-        public float GlobalSetpoint
+        public double GlobalSetpoint
         {
             get => _globalSetpoint;
             set

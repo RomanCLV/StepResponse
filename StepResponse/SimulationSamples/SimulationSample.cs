@@ -2,12 +2,12 @@
 {
     internal readonly struct SimulationSample
     {
-        public readonly float Time;
-        public readonly float Output;
-        public readonly float Target;
+        public readonly double Time;
+        public readonly double Output;
+        public readonly double Target;
         public readonly ulong ComputeTimeUs;
 
-        public SimulationSample(float time, float target, float output, ulong computeTimeUs)
+        public SimulationSample(double time, double target, double output, ulong computeTimeUs)
         {
             Time = time;
             Target = target;

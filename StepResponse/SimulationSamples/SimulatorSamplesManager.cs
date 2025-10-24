@@ -25,7 +25,7 @@ namespace StepResponse.Samples
             _samplesPerCollection = 0;
         }
 
-        public void Reserve(int collectionCount, float samplingTimeSecs, float simulationTimeSecs)
+        public void Reserve(int collectionCount, double samplingTimeSecs, double simulationTimeSecs)
         {
             Clear();
             int sampleCount = (int)(simulationTimeSecs / samplingTimeSecs) + 1;
@@ -42,7 +42,7 @@ namespace StepResponse.Samples
             _collections[collectionIndex].Add(sample);
         }
 
-        public void AddSample(int collectionIndex, float time, float target, float output, ulong computeTimeUs)
+        public void AddSample(int collectionIndex, double time, double target, double output, ulong computeTimeUs)
         {
             if (collectionIndex < 0 || collectionIndex >= _collections.Count)
                 throw new ArgumentOutOfRangeException(nameof(collectionIndex));

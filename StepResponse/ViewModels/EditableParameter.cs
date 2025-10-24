@@ -4,14 +4,14 @@
     {
         public string Key { get; }
 
-        private float _value;
-        public float Value
+        private double _value;
+        public double Value
         {
             get => _value;
             set => SetValue(ref _value, value);
         }
 
-        public EditableParameter(string key, float value)
+        public EditableParameter(string key, double value)
         {
             Key = key;
             _value = value;

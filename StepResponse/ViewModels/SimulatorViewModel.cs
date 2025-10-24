@@ -71,15 +71,15 @@ namespace StepResponse.ViewModels
             }
         }
 
-        private float _lastOutput;
-        public float LastOutput
+        private double _lastOutput;
+        public double LastOutput
         {
             get => _lastOutput;
             private set => SetValue(ref _lastOutput, value);
         }
 
-        private float _setpoint;
-        public float Setpoint
+        private double _setpoint;
+        public double Setpoint
         {
             get => _setpoint;
             set
@@ -90,8 +90,8 @@ namespace StepResponse.ViewModels
         }
 
 
-        private float _startAt;
-        public float StartAt
+        private double _startAt;
+        public double StartAt
         {
             get => _startAt;
             set
@@ -101,8 +101,8 @@ namespace StepResponse.ViewModels
             }
         }
 
-        private float _lastError;
-        public float LastError
+        private double _lastError;
+        public double LastError
         {
             get => _lastError;
             private set => SetValue(ref _lastError, value);

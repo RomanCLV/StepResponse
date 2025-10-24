@@ -8,9 +8,9 @@ namespace StepResponse.SimulationModel
     internal readonly struct Parameter
     {
         public readonly string Name;
-        public readonly float Value;
+        public readonly double Value;
 
-        public Parameter(string name, float value)
+        public Parameter(string name, double value)
         {
             Name = name;
             Value = value;
@@ -26,27 +26,27 @@ namespace StepResponse.SimulationModel
         /// </summary>
         internal abstract void Reset();
 
-        internal abstract float CurrentOutput();
+        internal abstract double CurrentOutput();
 
-        internal abstract void SetCurrent(float current);
+        internal abstract void SetCurrent(double current);
 
-        internal abstract float Update(float input, float elapsedTime);
+        internal abstract double Update(double input, double elapsedTime);
 
         /// <summary>
         /// Return parameters for UI/export
         /// </summary>
-        public abstract Dictionary<string, float> GetParameters();
+        public abstract Dictionary<string, double> GetParameters();
 
         /// <summary>
         /// Get parameter by name.
         /// </summary>
-        public abstract bool GetParameter(string param, out float value);
+        public abstract bool GetParameter(string param, out double value);
 
         /// <summary>
         /// Set parameter by name.
         /// </summary>
-        public abstract bool SetParameter(string param, float value);
+        public abstract bool SetParameter(string param, double value);
 
-        public abstract bool IsValidValue(string param, float value);
+        public abstract bool IsValidValue(string param, double value);
     }
 }

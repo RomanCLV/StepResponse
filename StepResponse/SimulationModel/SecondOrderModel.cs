@@ -20,16 +20,16 @@ namespace StepResponse.SimulationModel
         public const string Z_KEY = "Z";
 
         // Model parameters as fields
-        private float _k;
-        private float _w0;
-        private float _z;
+        private double _k;
+        private double _w0;
+        private double _z;
 
         // Simulation state (previous outputs for second-order system)
-        private float _previousOutput1; // y[n-1]
-        private float _previousOutput2; // y[n-2]
+        private double _previousOutput1; // y[n-1]
+        private double _previousOutput2; // y[n-2]
 
         // Properties for direct access
-        public float K 
+        public double K 
         {
             get => _k;
             set
@@ -42,12 +42,12 @@ namespace StepResponse.SimulationModel
             }
         }
 
-        public float W0 
+        public double W0 
         {
             get => _w0;
             set
             {
-                if (value <= 0)
+                if (value <= 0.0)
                     throw new ArgumentOutOfRangeException(nameof(W0), "W0 must be positive.");
 
                 if (_w0 != value)
@@ -58,12 +58,12 @@ namespace StepResponse.SimulationModel
             }
         }
 
-        public float Z 
+        public double Z 
         {
             get => _z;
             set
             {
-                if (value < 0)
+                if (value < 0.0)
                     throw new ArgumentOutOfRangeException(nameof(Z), "Z must be non-negative.");
 
                 if (_z != value)
@@ -75,31 +75,31 @@ namespace StepResponse.SimulationModel
         }
 
         // Constructors
-        public SecondOrderModel() : this(1f, 1f, 0.5f) { }
+        public SecondOrderModel() : this(1.0, 1.0, 0.5) { }
 
-        public SecondOrderModel(float k, float w0, float z)
+        public SecondOrderModel(double k, double w0, double z)
         {
             _k = k;
             _w0 = w0;
             _z = z;
 
-            _previousOutput1 = 0f;
-            _previousOutput2 = 0f;
+            _previousOutput1 = 0.0;
+            _previousOutput2 = 0.0;
         }
 
-        internal override float CurrentOutput()
+        internal override double CurrentOutput()
         {
             return _previousOutput1;
         }
 
         internal override void Reset()
         {
-            _previousOutput1 = 0f;
-            _previousOutput2 = 0f;
+            _previousOutput1 = 0.0;
+            _previousOutput2 = 0.0;
         }
 
 
-        internal override void SetCurrent(float current)
+        internal override void SetCurrent(double current)
         {
             _previousOutput1 = current;
             _previousOutput2 = current;
@@ -111,7 +111,7 @@ namespace StepResponse.SimulationModel
         /// <param name="input">Current input value (u[n])</param>
         /// <param name="elapsedTime">Sampling interval (dt)</param>
         /// <returns>Current output value (y[n])</returns>
-        internal override float Update(float input, float elapsedTime)
+        internal override double Update(double input, double elapsedTime)
         {
             // Continuous-time: y'' + 2*Z*W0*y' + W0^2*y = K*W0^2*u
             // Discrete-time difference equation: y[n] = a1*y[n-1] + a2*y[n-2] + b0*u[n]
@@ -122,17 +122,17 @@ namespace StepResponse.SimulationModel
             // _z : damping ratio
             // _k : system gain
 
-            float t2 = elapsedTime * elapsedTime;
-            float w2 = _w0 * _w0;
-            float w2t2 = w2 * t2;
-            float tmp = 4f * _z * _w0 * elapsedTime + w2t2;
+            double t2 = elapsedTime * elapsedTime;
+            double w2 = _w0 * _w0;
+            double w2t2 = w2 * t2;
+            double tmp = 4.0 * _z * _w0 * elapsedTime + w2t2;
 
-            float a0 = 4f + tmp;
-            float a1 = (-8f + 2f * w2t2) / a0;
-            float a2 = (4f - tmp) / a0;
-            float b0 = _k * w2t2 / a0;
+            double a0 = 4.0 + tmp;
+            double a1 = (-8.0 + 2.0 * w2t2) / a0;
+            double a2 = (4.0 - tmp) / a0;
+            double b0 = _k * w2t2 / a0;
 
-            float output = -a1 * _previousOutput1 - a2 * _previousOutput2 + b0 * input;
+            double output = -a1 * _previousOutput1 - a2 * _previousOutput2 + b0 * input;
 
             // Update state
             _previousOutput2 = _previousOutput1;
@@ -141,9 +141,9 @@ namespace StepResponse.SimulationModel
             return output;
         }
 
-        public override Dictionary<string, float> GetParameters()
+        public override Dictionary<string, double> GetParameters()
         {
-            return new Dictionary<string, float>
+            return new Dictionary<string, double>
             {
                 { K_KEY, _k },
                 { W0_KEY, _w0 },
@@ -151,18 +151,18 @@ namespace StepResponse.SimulationModel
             };
         }
 
-        public override bool GetParameter(string param, out float value)
+        public override bool GetParameter(string param, out double value)
         {
             switch (param)
             {
                 case K_KEY: value = _k; return true;
                 case W0_KEY: value = _w0; return true;
                 case Z_KEY: value = _z; return true;
-                default: value = 0f; return false;
+                default: value = 0.0; return false;
             }
         }
 
-        public override bool SetParameter(string param, float value)
+        public override bool SetParameter(string param, double value)
         {
             switch (param)
             {
@@ -173,16 +173,16 @@ namespace StepResponse.SimulationModel
             }
         }
 
-        public override bool IsValidValue(string param, float value)
+        public override bool IsValidValue(string param, double value)
         {
             switch (param)
             {
                 case K_KEY:
-                    return true; // K can be any float
+                    return true; // K can be any double
                 case W0_KEY:
-                    return value > 0f; // W0 must be positive
+                    return value > 0.0; // W0 must be positive
                 case Z_KEY:
-                    return value >= 0f; // Z must be non-negative
+                    return value >= 0.0; // Z must be non-negative
                 default:
                     return false; // Unknown parameter
             }

@@ -18,8 +18,8 @@ namespace StepResponse.Control
         public const string KD_KEY = "Kd";
 
         // Gains
-        private float _kp;
-        public float Kp
+        private double _kp;
+        public double Kp
         {
             get => _kp;
             set 
@@ -32,8 +32,8 @@ namespace StepResponse.Control
             }
         }
 
-        private float _ki;
-        public float Ki
+        private double _ki;
+        public double Ki
         {
             get => _ki;
             set
@@ -46,8 +46,8 @@ namespace StepResponse.Control
             }
         }
 
-        private float _kd;
-        public float Kd
+        private double _kd;
+        public double Kd
         {
             get => _kd;
             set
@@ -63,22 +63,22 @@ namespace StepResponse.Control
         public EventHandler? ParametersChanged;
 
         // Anti-windup / saturation
-        public float OutputMin { get; set; } = float.NegativeInfinity;
-        public float OutputMax { get; set; } = float.PositiveInfinity;
-        public float IntegralMin { get; set; } = float.NegativeInfinity;
-        public float IntegralMax { get; set; } = float.PositiveInfinity;
+        public double OutputMin { get; set; } = double.NegativeInfinity;
+        public double OutputMax { get; set; } = double.PositiveInfinity;
+        public double IntegralMin { get; set; } = double.NegativeInfinity;
+        public double IntegralMax { get; set; } = double.PositiveInfinity;
 
         // Filtre du terme dérivé : time constant tau (seconds). Si tau == 0 => pas de filtrage (derivative pur).
         // On applique un filtre passe-bas simple: d_filtered = alpha * d_prev + (1-alpha) * d_raw
-        public float DerivativeFilterTau { get; set; } = 0.01f;
+        public double DerivativeFilterTau { get; set; } = 0.01;
 
         // Internal state
-        private float _integral;
-        private float _previousError;
-        private float _previousDerivativeFiltered;
+        private double _integral;
+        private double _previousError;
+        private double _previousDerivativeFiltered;
         private bool _firstCompute = true;
 
-        public PidController(float kp = 1f, float ki = 0f, float kd = 0f)
+        public PidController(double kp = 1.0, double ki = 0.0, double kd = 0.0)
         {
             _kp = kp;
             _ki = ki;
@@ -90,9 +90,9 @@ namespace StepResponse.Control
         /// </summary>
         public void Reset()
         {
-            _integral = 0f;
-            _previousError = 0f;
-            _previousDerivativeFiltered = 0f;
+            _integral = 0.0;
+            _previousError = 0.0;
+            _previousDerivativeFiltered = 0.0;
             _firstCompute = true;
         }
 
@@ -101,27 +101,27 @@ namespace StepResponse.Control
         /// Anti-windup by clamping the integral; output is clamped to [OutputMin, OutputMax].
         /// dt must be > 0.
         /// </summary>
-        public float ComputeFromError(float error, float dt)
+        public double ComputeFromError(double error, double dt)
         {
-            if (dt <= 0f)
+            if (dt <= 0.0)
                 throw new ArgumentException("dt must be > 0", nameof(dt));
 
             // Proportional
-            float p = _kp * error;
+            double p = _kp * error;
 
             // Integral (accumulate error*dt)
             _integral += error * dt;
             // Clamp integral to avoid windup
             if (_integral > IntegralMax) _integral = IntegralMax;
             else if (_integral < IntegralMin) _integral = IntegralMin;
-            float i = _ki * _integral;
+            double i = _ki * _integral;
 
             // Derivative (on error)
-            float derivativeRaw = 0f;
+            double derivativeRaw = 0.0;
             if (_firstCompute)
             {
                 // At first compute, derivative unknown: assume zero derivative to avoid spike.
-                derivativeRaw = 0f;
+                derivativeRaw = 0.0;
                 _firstCompute = false;
             }
             else
@@ -130,20 +130,20 @@ namespace StepResponse.Control
             }
 
             // Apply simple first-order low-pass filter to derivative:
-            float dFiltered;
-            if (DerivativeFilterTau <= 0f)
+            double dFiltered;
+            if (DerivativeFilterTau <= 0.0)
             {
                 dFiltered = derivativeRaw;
             }
             else
             {
-                float alpha = DerivativeFilterTau / (DerivativeFilterTau + dt); // alpha in (0,1)
-                dFiltered = alpha * _previousDerivativeFiltered + (1f - alpha) * derivativeRaw;
+                double alpha = DerivativeFilterTau / (DerivativeFilterTau + dt); // alpha in (0,1)
+                dFiltered = alpha * _previousDerivativeFiltered + (1.0 - alpha) * derivativeRaw;
             }
-            float d = _kd * dFiltered;
+            double d = _kd * dFiltered;
 
             // PID output (before saturation)
-            float output = p + i + d;
+            double output = p + i + d;
 
             // Saturate output
             if (output > OutputMax) 
@@ -162,7 +162,7 @@ namespace StepResponse.Control
         /// Convenience: compute command from setpoint and measurement.
         /// Equivalent to ComputeFromError(setpoint - measurement, dt).
         /// </summary>
-        public float Compute(float setpoint, float measurement, float dt)
+        public double Compute(double setpoint, double measurement, double dt)
         {
             return ComputeFromError(setpoint - measurement, dt);
         }
@@ -170,11 +170,11 @@ namespace StepResponse.Control
         /// <summary>
         /// Optionally expose the internal integral (for diagnostics).
         /// </summary>
-        public float GetIntegral() => _integral;
+        public double GetIntegral() => _integral;
 
-        public Dictionary<string, float> GetParameters()
+        public Dictionary<string, double> GetParameters()
         {
-            return new Dictionary<string, float>
+            return new Dictionary<string, double>
             {
                 { KP_KEY, _kp },
                 { KI_KEY, _ki },
@@ -182,18 +182,18 @@ namespace StepResponse.Control
             };
         }
 
-        public bool GetParameter(string param, out float value)
+        public bool GetParameter(string param, out double value)
         {
             switch (param)
             {
                 case KP_KEY: value = _kp; return true;
                 case KI_KEY: value = _ki; return true;
                 case KD_KEY: value = _kd; return true;
-                default: value = 0f; return false;
+                default: value = 0.0; return false;
             }
         }
 
-        public bool SetParameter(string param, float value)
+        public bool SetParameter(string param, double value)
         {
             switch (param)
             {
@@ -204,9 +204,9 @@ namespace StepResponse.Control
             }
         }
 
-        public bool IsValidValue(string param, float value)
+        public bool IsValidValue(string param, double value)
         {
-            // All float values are valid for Kp, Ki, Kd
+            // All double values are valid for Kp, Ki, Kd
             switch (param)
             {
                 case KP_KEY:
