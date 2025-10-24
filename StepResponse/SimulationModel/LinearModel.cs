@@ -17,7 +17,7 @@ namespace StepResponse.SimulationModel
         private double _k;
         private double _r;
 
-        // Simulation state (previous outputs for second-order system)
+        // Simulation state
         private double _previousOutput; // y[n-1]
 
         // Properties
